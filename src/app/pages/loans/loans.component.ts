@@ -1,12 +1,13 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { LoansApi, Loan, CreateLoanPayload } from '../../services/loans.api';
 
 @Component({
   selector: 'app-loans',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   template: `
     <h1>Loans</h1>
     <p class="hint">CRUD básico contra api-test-corp-loans:8082.</p>
@@ -37,7 +38,7 @@ import { LoansApi, Loan, CreateLoanPayload } from '../../services/loans.api';
       <table *ngIf="loans.length > 0">
         <thead>
           <tr>
-            <th>ID</th><th>Company</th><th>Tipo</th><th>Moneda</th><th>Monto</th><th>Cuotas</th><th>Status</th>
+            <th>ID</th><th>Company</th><th>Tipo</th><th>Moneda</th><th>Monto</th><th>Cuotas</th><th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -48,7 +49,15 @@ import { LoansApi, Loan, CreateLoanPayload } from '../../services/loans.api';
             <td>{{ l.currency }}</td>
             <td>{{ l.amount | number:'1.2-2' }}</td>
             <td>{{ l.installments }}</td>
-            <td><span class="status-{{ l.status }}">{{ l.status }}</span></td>
+            <td>
+              <!-- Botón "Ver cuotas" solo si el loan tiene installments -->
+              <a *ngIf="l.installments > 0"
+                 [routerLink]="['/loans', l.id, 'installments']"
+                 class="btn-action">
+                Ver cuotas
+              </a>
+              <span *ngIf="l.installments === 0" class="muted">—</span>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -69,6 +78,19 @@ import { LoansApi, Loan, CreateLoanPayload } from '../../services/loans.api';
       .empty { color: #9ca3af; }
       .loading { color: #6b7280; }
       code { font-size: 12px; color: #6b7280; }
+      .btn-action {
+        display: inline-block;
+        padding: 6px 12px;
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 500;
+        transition: background 0.15s;
+      }
+      .btn-action:hover { background: #1d4ed8; }
+      .muted { color: #9ca3af; font-size: 13px; }
     </style>
   `
 })

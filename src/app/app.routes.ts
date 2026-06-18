@@ -14,5 +14,9 @@ export const routes: Routes = [
     path: 'loans',
     loadComponent: () => import('./pages/loans/loans.component').then(m => m.LoansComponent)
   },
+  {
+    path: 'loans/:id/installments',
+    loadComponent: () => import('./pages/loans/installments.component').then(m => m.InstallmentsComponent)
+  },
   { path: '**', redirectTo: '/dashboard' }
 ];
